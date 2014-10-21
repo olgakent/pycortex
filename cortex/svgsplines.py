@@ -1,11 +1,10 @@
-from pylab import *
-import math
-import time
+import numpy as np
+import matplotlib.pyplot as plt
 
 class LineSpline:
     def __init__(self, start, end):
-        self.s = zeros(2)
-        self.e = zeros(2)
+        self.s = np.zeros(2)
+        self.e = np.zeros(2)
 
         self.s[0] = start[0]
         self.s[1] = start[1]
@@ -25,16 +24,16 @@ class LineSpline:
         b = s[1] - vts[:,1]
         
         # params for the single root
-        t = nan
+        t = np.nan
         if isHorizLine:
-            t = -1*ones(vts.shape[0])
+            t = -1*np.ones(vts.shape[0])
             isSSmaller = s[0]<e[0]
             isAtY = vts[:,1]==s[1]
             t[isAtY] = t[isAtY] + 1*isSSmaller + 2*(~isSSmaller) # t=0 if s<e, else t=1
         else:
             t = -1*b/a
 
-        closest_xs = Inf*ones(vts.shape[0])
+        closest_xs = np.Inf*np.ones(vts.shape[0])
 
         # ensure it's within the spline's piecewise region   
         isValid = (0<=t)*(t<=1)
@@ -60,16 +59,16 @@ class LineSpline:
         b = s[0] - vts[:,0]
 
         # params for the single root  
-        t = nan
+        t = np.nan
         if isVertLine:
-            t = -1*ones(vts.shape[0])
+            t = -1*np.ones(vts.shape[0])
             isSSmaller = s[1]<e[1]
             isAtX = vts[:,0]==s[0]
             t[isAtX] = t[isAtX] + 1*isSSmaller + 2*(~isSSmaller) # t=0 if s<e, else t=1
         else:
             t = -1*b/a
 
-        closest_ys = Inf*ones(vts)
+        closest_ys = np.Inf*np.ones(vts)
 
         # ensure it's within the spline's piecewise region
         isValid = (0<=t)*(t<=1)
@@ -105,14 +104,14 @@ class LineSpline:
         s = self.s
         e = self.e
 
-        params = array(range(101))/100.0
+        params = np.array(range(101))/100.0
         sp_pts = []
         for t in params: #based on the formula for linear splines
             x_t = float(t*s[0] + (1-t)*e[0])
             y_t = float(t*s[1] + (1-t)*e[1])
             sp_pts.append([x_t,y_t])
 
-        sp_pts = array(sp_pts)
+        sp_pts = np.array(sp_pts)
         if ind == 0:
             plt.plot(sp_pts[:,0], sp_pts[:,1], 'm.', linewidth=3)
         elif ind == 1:
@@ -122,9 +121,9 @@ class LineSpline:
 
 class QuadBezSpline:
     def __init__(self, start, ctl, end):
-        self.s = zeros(2)
-        self.c = zeros(2)
-        self.e = zeros(2) 
+        self.s = np.zeros(2)
+        self.c = np.zeros(2)
+        self.e = np.zeros(2) 
 
         self.s[0] = start[0]
         self.s[1] = start[1]
@@ -147,9 +146,9 @@ class QuadBezSpline:
         c = s[1] - vts[:,1]
 
         if a == 0:
-            t = nan
+            t = np.nan
             if b == 0:
-                t = -1*ones(vts.shape[0])
+                t = -1*np.ones(vts.shape[0])
                 isSSmaller = s[0]<c[0]
                 isAtY = vts[:,1]==s[1]
                 t[isAtY] = t[isAtY] + 1*isSSmaller + 2*(~isSSmaller) # t=0 if s<c, else t=1                                                                                                                                              \
@@ -157,7 +156,7 @@ class QuadBezSpline:
             else:
                 t = -1.0*c/b
                 
-            closest_xs = Inf*ones((vts.shape[0],2))
+            closest_xs = np.Inf*np.ones((vts.shape[0],2))
             #ensure it's within the spline's piecewise region
 
             isValid = (0<=t)*(t<=1)
@@ -171,7 +170,7 @@ class QuadBezSpline:
         t1 = (-b + (b*b - 4*a*c)**.5)/(2*a) 
         t2 = (-b - (b*b - 4*a*c)**.5)/(2*a)
 
-        closest_xs = Inf*ones((vts.shape[0],2))
+        closest_xs = np.Inf*np.ones((vts.shape[0],2))
 
         # ensure they're within the spline's piecewise region
         isValid1 = (0<=t1)*(t1<=1)
@@ -199,16 +198,16 @@ class QuadBezSpline:
         c = s[0] - vts[:,0]
 
         if a == 0:
-            t = nan
+            t = np.nan
             if b == 0:
-                t = -1*ones(vts.shape[0])
+                t = -1*np.ones(vts.shape[0])
                 isSSmaller = s[1]<c[1]
                 isAtX = vts[:,0]==s[0]
                 t[isAtX] = t[isAtX] + 1*isSSmaller + 2*(~isSSmaller) # t=0 if s<c, else t=1
             else:
                 t = -1.0*c/b
                 
-            closest_ys = Inf*ones((vts.shape[0],2))
+            closest_ys = np.Inf*np.ones((vts.shape[0],2))
             #ensure it's within the spline's piecewise region 
 
             isValid = (0<=t)*(t<=1)
@@ -222,7 +221,7 @@ class QuadBezSpline:
         t1 = (-b + (b*b - 4*a*c)**.5)/(2*a)
         t2 = (-b - (b*b - 4*a*c)**.5)/(2*a)
 
-        closest_ys = Inf*ones((vts.shape[0],2))
+        closest_ys = np.Inf*np.ones((vts.shape[0],2))
 
         # ensure they're within the spline's piecewise region   
         isValid1 = (0<=t1)*(t1<=1)
@@ -265,14 +264,14 @@ class QuadBezSpline:
         c = self.c
         e = self.e
 
-        params = array(range(101))/100.0
+        params = np.array(range(101))/100.0
         sp_pts = []
         for t in params: #based on the formula for quaratic bezier splines
             x_t = s[0]*pow(1-t,2) + c[0]*(2*t)*(1-t) + e[0]*pow(t,2)
             y_t = s[1]*pow(1-t,2) + c[1]*(2*t)*(1-t) + e[1]*pow(t,2)
             sp_pts.append([x_t,y_t])
 
-        sp_pts = array(sp_pts)
+        sp_pts = np.array(sp_pts)
         if ind == 0:
             plt.plot(sp_pts[:,0], sp_pts[:,1], 'm.', linewidth=3)
         elif ind == 1:
@@ -283,10 +282,10 @@ class QuadBezSpline:
 
 class CubBezSpline:
     def __init__(self, start, ctl1, ctl2, end):
-        self.s = zeros(2)
-        self.c1 = zeros(2)
-        self.c2 = zeros(2)
-        self.e = zeros(2)
+        self.s = np.zeros(2)
+        self.c1 = np.zeros(2)
+        self.c2 = np.zeros(2)
+        self.e = np.zeros(2)
 
         self.s[0] = start[0]
         self.s[1] = start[1]
@@ -316,16 +315,16 @@ class CubBezSpline:
 
         if a == 0:
             if b == 0:
-                t = nan
+                t = np.nan
                 if c == 0:
-                    t = -1*ones(vts.shape[0])
+                    t = -1*np.ones(vts.shape[0])
                     isSSmaller = s[0]<c1[0]
                     isAtY = vts[:,1]==s[1]
                     t[isAtY] = t[isAtY] + 1*isSSmaller + 2*(~isSSmaller) # t=0 if s<e, else t=1                                                                                                                                                       
                 else:
                     t = -1.0*d/c
 
-                closest_xs = Inf*ones((vts.shape[0],3))
+                closest_xs = np.Inf*np.ones((vts.shape[0],3))
                 #ensure it's within the spline's piecewise region 
                 isValid = (0<=t)*(t<=1)
                 x_ts = ((1-t)**3)*s[0] + 3*((1-t)**2)*t*c1[0] + 3*(1-t)*t*t*c2[0] + (t**3)*e[0]
@@ -338,7 +337,7 @@ class CubBezSpline:
                 t1 = (-c + (b*b - 4*b*d)**.5)/(2*b)
                 t2 = (-c - (b*b - 4*b*d)**.5)/(2*b)
 
-                closest_xs = Inf*ones((vts.shape[0],3))
+                closest_xs = np.Inf*np.ones((vts.shape[0],3))
         
                 #ensure they're within the spline's piecewise region
                 isValid1 = (0<=t1)*(t1<=1)
@@ -364,26 +363,26 @@ class CubBezSpline:
         M = R**2 - Q**3
         
         isMPos = M>0
-        isMPos = array([isMPos]).T
+        isMPos = np.array([isMPos]).T
         
         #if M<0, 3 real roots
-        theta = arccos(R/((Q**3)**.5))
+        theta = np.arccos(R/((Q**3)**.5))
 
-        x1 = real(-1.0*(2.0*(Q**.5)*cos(theta/3.0)) - a/3.0)
-        x2 = real(-1.0*(2.0*(Q**.5)*cos((theta + 2.0*pi)/3.0)) - a/3.0)
-        x3 = real(-1.0*(2.0*(Q**.5)*cos((theta - 2.0*pi)/3.0)) - a/3.0)
+        x1 = np.real(-1.0*(2.0*(Q**.5)*np.cos(theta/3.0)) - a/3.0)
+        x2 = np.real(-1.0*(2.0*(Q**.5)*np.cos((theta + 2.0*np.pi)/3.0)) - a/3.0)
+        x3 = np.real(-1.0*(2.0*(Q**.5)*np.cos((theta - 2.0*np.pi)/3.0)) - a/3.0)
 
         #if M>0, 1 real root
-        S_p = -1.0*sign(R)*(abs(R) + M**.5)**(1.0/3)
+        S_p = -1.0*np.sign(R)*(abs(R) + M**.5)**(1.0/3)
         T_p = Q/S_p
         x_p = S_p + T_p - a/3.0
 
-        ts1 = ~isMPos*array([x1, x2, x3]).T
-        isNaNts1 = isnan(ts1)
+        ts1 = ~isMPos*np.array([x1, x2, x3]).T
+        isNaNts1 = np.isnan(ts1)
         ts1[isNaNts1] = 0.0
 
-        ts2 = isMPos*array([x_p,x_p,x_p]).T
-        isNaNts2 = isnan(ts2)
+        ts2 = isMPos*np.array([x_p,x_p,x_p]).T
+        isNaNts2 = np.isnan(ts2)
         ts2[isNaNts2] = 0.0
 
         ts = ts1 + ts2
@@ -394,7 +393,7 @@ class CubBezSpline:
         t2 = ts[:,1]
         t3 = ts[:,2]
 
-        closest_xs = Inf*ones((vts.shape[0],3))
+        closest_xs = np.Inf*np.ones((vts.shape[0],3))
 
         # ensure they're within the spline's piecewise region   
         isValid1 = (0<=t1)*(t1<=1)
@@ -430,16 +429,16 @@ class CubBezSpline:
 
         if a == 0:
             if b == 0:
-                t = nan
+                t = np.nan
                 if c == 0:
-                    t = -1*ones(vts.shape[0])
+                    t = -1*np.ones(vts.shape[0])
                     isSSmaller = s[1]<c1[1]
                     isAtX = vts[:,0]==s[0]
                     t[isAtX] = t[isAtX] + 1*isSSmaller + 2*(~isSSmaller) # t=0 if s<c1, else t=1                                                                                                                                                                                                                                              
                 else:
                     t = -1.0*d/c
 
-                closest_ys = Inf*ones((vts.shape[0],3))
+                closest_ys = np.Inf*np.ones((vts.shape[0],3))
                 #ensure it's within the spline's piecewise region                                
                 isValid = (0<=t)*(t<=1)
                 y_ts = ((1-t)**3)*s[1] + 3*((1-t)**2)*t*c1[1] + 3*(1-t)*t*t*c2[1] + (t**3)*e[1]
@@ -452,7 +451,7 @@ class CubBezSpline:
                 t1 = (-c + (b*b - 4*b*d)**.5)/(2*b)
                 t2 = (-c - (b*b - 4*b*d)**.5)/(2*b)
 
-                closest_ys = Inf*ones((vts.shape[0],3))
+                closest_ys = np.Inf*np.ones((vts.shape[0],3))
 
                 #ensure they're within the spline's piecewise region
                 isValid1 = (0<=t1)*(t1<=1)
@@ -477,25 +476,26 @@ class CubBezSpline:
         R = (2.0*a**3 - 9.0*a*b + 27*c)/54.0
         M = R**2 - Q**3
         isMPos = M>0
-        isMPos = array([isMPos]).T
+        isMPos = np.array([isMPos]).T
 
         #if M<0, 3 real roots
-        theta = arccos(R/((Q**3)**.5))
-        y1 = real(-1.0*(2.0*(Q**.5)*cos(theta/3.0)) - a/3.0)
-        y2 = real(-1.0*(2.0*(Q**.5)*cos((theta + 2.0*pi)/3.0)) - a/3.0)
-        y3 = real(-1.0*(2.0*(Q**.5)*cos((theta - 2.0*pi)/3.0)) - a/3.0)
+        theta = np.arccos(R/((Q**3)**.5))
+
+        y1 = np.real(-1.0*(2.0*(Q**.5)*np.cos(theta/3.0)) - a/3.0)
+        y2 = np.real(-1.0*(2.0*(Q**.5)*np.cos((theta + 2.0*np.pi)/3.0)) - a/3.0)
+        y3 = np.real(-1.0*(2.0*(Q**.5)*np.cos((theta - 2.0*np.pi)/3.0)) - a/3.0)
 
         #if M>0, 1 real root
-        S_p = -1.0*sign(R)*(abs(R) + M**.5)**(1.0/3)
+        S_p = -1.0*np.sign(R)*(abs(R) + M**.5)**(1.0/3)
         T_p = Q/S_p
         y_p = S_p + T_p - a/3.0
         y_p = y_p
 
-        ts1 = ~isMPos*array([y1, y2, y3]).T
-        isNaNts1 = isnan(ts1)
+        ts1 = ~isMPos*np.array([y1, y2, y3]).T
+        isNaNts1 = np.isnan(ts1)
         ts1[isNaNts1] = 0
-        ts2 = isMPos*array([y_p,y_p,y_p]).T
-        isNaNts2 = isnan(ts2)
+        ts2 = isMPos*np.array([y_p,y_p,y_p]).T
+        isNaNts2 = np.isnan(ts2)
         ts2[isNaNts2] = 0
 
         ts = ts1 + ts2
@@ -506,7 +506,7 @@ class CubBezSpline:
         t2 = ts[:,1]
         t3 = ts[:,2]
 
-        closest_ys = Inf*ones((vts.shape[0],3))
+        closest_ys = np.Inf*np.ones((vts.shape[0],3))
 
         # ensure they're within the spline's piecewise region   
         isValid1 = (0<=t1)*(t1<=1)
@@ -555,14 +555,14 @@ class CubBezSpline:
         c2 = self.c2
         e = self.e
 
-        params = array(range(101))/100.0
+        params = np.array(range(101))/100.0
         sp_pts = []
         for t in params: #based on the formula for cubic bezier splines
             x_t = s[0]*pow(1-t,3) + c1[0]*3*pow(1-t,2)*t + c2[0]*3*(1-t)*pow(t,2) + e[0]*pow(t,3)
             y_t = s[1]*pow(1-t,3) + c1[1]*3*pow(1-t,2)*t + c2[1]*3*(1-t)*pow(t,2) + e[1]*pow(t,3)
             sp_pts.append([x_t,y_t])
 
-        sp_pts = array(sp_pts)
+        sp_pts = np.array(sp_pts)
         if ind == 0:
             plt.plot(sp_pts[:,0], sp_pts[:,1], 'm.', linewidth=3)
         elif ind == 1:
