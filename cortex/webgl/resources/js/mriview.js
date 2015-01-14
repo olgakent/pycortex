@@ -30,9 +30,12 @@ var mriview = (function(module) {
         }.bind(this));
 
         this.ui = new jsplot.Menu();
-        this.ui.addEventListener("update", this._schedule);
+        this.ui.addEventListener("update", this.schedule.bind(this));
 
         this._bindUI();
+
+        // display fps counter
+        $(this.object).append( this.stats.domElement );
     }
     module.Viewer.prototype = Object.create(jsplot.Axes3D.prototype);
     THREE.EventDispatcher.prototype.apply(module.Viewer.prototype);

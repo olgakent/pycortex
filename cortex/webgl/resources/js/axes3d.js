@@ -35,7 +35,7 @@ var jsplot = (function (module) {
         // renderer
         this.renderer = new THREE.WebGLRenderer({ 
             alpha:true,
-            antialias: true, 
+            antialias: false, 
             preserveDrawingBuffer:true, 
             canvas:this.canvas[0],
         });
@@ -45,6 +45,16 @@ var jsplot = (function (module) {
         this.state = "pause";
         this._startplay = null;
         this._animation = null;
+
+        // fps counter
+        this.stats = new Stats();
+        this.stats.setMode(0); // 0: fps, 1: ms
+
+        // position bottom left
+        this.stats.domElement.style.position = 'absolute';
+        this.stats.domElement.style.left = '0';
+        this.stats.domElement.style.bottom = '0';
+        this.stats.domElement.style.zIndex = '2';
 
         //Figure registrations
         this.figure.register("playsync", this, function(time) {
@@ -95,6 +105,8 @@ var jsplot = (function (module) {
         }
     };
     module.Axes3D.prototype.draw = function () {
+        this.stats.update();
+        // this.stats.begin(); // for fps counter
         var now = new Date();
         if (this.state == "play")
             this.setFrame((now - this._startplay) / 1000);
@@ -128,6 +140,7 @@ var jsplot = (function (module) {
         }
         this._scheduled = false;
         this.dispatchEvent({type:"draw"});
+        // this.stats.end(); // for fps counter
     };
     module.Axes3D.prototype.drawView = function(scene) {
         this.renderer.render(scene, this.camera);
