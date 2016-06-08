@@ -368,6 +368,8 @@ class Axis(HasTraits):
     def _slab_default(self):
         top = tvtk.ClipPolyData(clip_function=self.planes[0], inside_out=1)
         configure_input(top, self.parent.surf.parent.parent.filter)
+        self.top = top
+        top.update()
 
         bot = tvtk.ClipPolyData(clip_function=self.planes[1], inside_out=1)
         configure_input(bot, top.output)
@@ -392,6 +394,8 @@ class Axis(HasTraits):
         xfm.filter.transform.post_multiply()
         xfm.filter.transform.translate(-translate)
         xfm.widget.enabled = False
+        xfm.filter.update()
+        self._xfm = xfm
         surf = mlab.pipeline.surface(xfm,
             figure=self.scene.mayavi_scene,
             color=(1,1,1),
@@ -455,6 +459,7 @@ class Axis(HasTraits):
         def move_view(obj, evt):
             # Disable rendering on all scene
             cpos = obj.GetCurrentCursorPosition()
+            
             position = list(cpos*side_src.spacing)[:2]
             position.insert(self.axis, self.position[self.axis])
             # We need to special case y, as the view has been rotated.
@@ -564,6 +569,7 @@ class Axis(HasTraits):
         self.xfm.transform.translate(trans)
         self.xfm.transform.pre_multiply()
 
+        self.xfm.filter.update()
         self.xfm.widget.set_transform(self.xfm.filter.transform)
         self.xfm.update_pipeline()
         self.parent.update_slabs()
@@ -603,12 +609,20 @@ class Axis(HasTraits):
             self.planes[0].points = [tuple(pts)]
             pts[self.axis] = pos-gap
             self.planes[1].points = [tuple(pts)]
+
+            self.ipw_3d.ipw.reslice.update()
+            self.ipw.update_data()
+            self.ipw.update_pipeline()
+            self.update_slab()
             self.update_slab()
 
     def update_slab(self):
+        self.top.update()
         self.slab.update()
         self.outline.data.set(points=self.slab.output.points, polys=self.slab.output.polys)
         self.surf.data.set(points=self.slab.output.points, polys=self.slab.output.polys)
+        self.outline.update()
+        self.surf.update()
 
 class XAxis(Axis):
     axis = 0
@@ -768,6 +782,7 @@ class Align(HasTraits):
         xfm.widget.add_observer("EndInteractionEvent", self.update_slabs)
         xfm.transform.set_matrix(self.startxfm.ravel())
         xfm.widget.set_transform(xfm.transform)
+        xfm.filter.update()
         return xfm
 
     #---------------------------------------------------------------------------
@@ -776,7 +791,7 @@ class Align(HasTraits):
     @on_trait_change('scene_3d.activated')
     def display_scene_3d(self):
         self.scene_3d.mlab.view(40, 50)
-        self.scene_3d.scene.renderer.use_depth_peeling = True
+        #self.scene_3d.scene.renderer.use_depth_peeling = True
         self.scene_3d.scene.background = (0, 0, 0)
         # Keep the view always pointing up
         self.scene_3d.scene.interactor.interactor_style = tvtk.InteractorStyleTerrain()
@@ -905,6 +920,7 @@ class Align(HasTraits):
 
         self.xfm.transform.set_matrix(matrix.ravel())
         self.xfm.widget.set_transform(self.xfm.transform)
+        self.xfm.filter.update()
         self.xfm.update_pipeline()
         self.update_slabs()
 
