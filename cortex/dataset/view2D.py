@@ -158,7 +158,8 @@ class Vertex2D(Dataview2D):
             self.dim1 = Vertex(dim1, subject)
             self.dim2 = Vertex(dim2, subject)
 
-        super(Vertex2D, self).__init__(description=description, cmap=cmap, vmin=vmin, vmax=vmax, **kwargs)
+        super(Vertex2D, self).__init__(description=description, cmap=cmap, vmin=vmin, vmax=vmax, 
+                                       vmin2=vmin2, vmax2=vmax2, **kwargs)
 
     def __repr__(self):
         return "<2D vertex data for (%s)>"%self.dim1.subject
