@@ -565,6 +565,7 @@ class Database(object):
             import hashlib
             hashname = "pycx_%s"%hashlib.md5(self.auxfile.h5.filename).hexdigest()[-8:]
             cachedir = os.path.join(tempfile.gettempdir(), hashname, subject)
+            print('cachedir returned:',cachedir)
         except (AttributeError, IOError):
             if options.config.has_option("basic", "cache"):
                 local_cache = os.path.expanduser(options.config.get("basic", "cache"))
