@@ -212,7 +212,7 @@ def make_static(outpath, data, types=("inflated",), recache=False, cmap="RdBu_r"
 
 def show(data, types=("inflated",), recache=False, cmap='RdBu_r', layout=None,
          autoclose=True, open_browser=None, port=None, pickerfun=None, output=webgl_output,
-         disp_layers=['rois'], extra_disp=None, template='mixer.html', **kwargs):
+         disp_layers=['rois'], extra_disp=None, template='mixer.html', url=None, **kwargs):
     """Display a dynamic viewer using the given dataset. 
 
     See cortex.webgl.make_static for more help.
@@ -225,6 +225,7 @@ def show(data, types=("inflated",), recache=False, cmap='RdBu_r', layout=None,
         which server port is running the web page) This argument replaces `open_browser`,
         which still works (2016.08.17) but is deprecated.
     """
+    print('Testing new webshow...')
     data = dataset.normalize(data)
     if not isinstance(data, dataset.Dataset):
         data = dataset.Dataset(data=data)
@@ -712,18 +713,33 @@ def show(data, types=("inflated",), recache=False, cmap='RdBu_r', layout=None,
         ], port)
     server.start()
     print("Started server on port %d"%server.port)
-    url = "http://%s:%d/%s"%(serve.hostname, server.port, template)
+    if output=='proxy_browser':
+        if url is None:
+            # Need a more general way to set this - this is specific to data8 class proxy setup
+            _, user = os.path.split(os.path.expanduser('~'))
+            url = 'https://data8.berkeley.edu/user/%s/proxy/%d/%s'%(user, server.port, template)
+            print(url)
+    else:
+        url = "http://%s:%d/%s"%(serve.hostname, server.port, template)
     if open_browser is not None:
         warnings.warn("`open_browser` input is deprecated! Use output=X, where X is one of ['new_browser', 'notebook', 'none']")
         if open_browser:
             output='new_browser'
         else:
-            output='None'
-    if output=='new_browser':
+            output='none'
+    if output == 'new_browser':
         webbrowser.open(url)
         client = server.get_client()
         client.server = server
         return client
+    elif output=='proxy_browser':
+        try:
+            from IPython.display import display, HTML
+            display(HTML('Open viewer: <a href="{0}" target="_blank">{0}</a>'.format(url)))
+        except:
+            pass
+        webbrowser.open(url)
+        return server
     elif output=='none':
         try:
             from IPython.display import display, HTML
@@ -735,6 +751,16 @@ def show(data, types=("inflated",), recache=False, cmap='RdBu_r', layout=None,
         try:
             from IPython.display import display, IFrame
             cell_ht = 500 # Reasonable default... make configurable?
+            # Currently borked. Need to make sure definitions are correct / in the right context
+            # This is supposed to spit back a string URL. 
+            # html = """
+            # <script>
+            # define(['jquery', 'base/js/utils'], function ($, utils) {
+            #     $('<iframe>').attr('src', utils.get_body_data('baseUrl') + '/proxy/' + {port} + '/mixer.html')
+            # });
+            # </script>
+            # """.format(port=port)
+            # display(HTML(html))
             display(IFrame(url, '100%', cell_ht))  #return?
             client = server.get_client()
             return client
