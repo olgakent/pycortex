@@ -264,10 +264,10 @@ def get_aseg_mask(subject, xfmname, aseg_id, **kwargs):
         mask = aseg == aseg_id
     return anat2epispace(mask.astype(float), subject, xfmname, **kwargs)
 
-def get_roi_masks(subject,xfmname,roi_list=None,dst=2,fail_for_missing_rois=False):
+def get_roi_masks(subject, xfmname, roi_list=None, dst=2, fail_for_missing_rois=False):
     '''Return a numbered mask + dictionary of roi numbers
 
-    This function returns a single 3D array with a separate numerical index for each ROI, 
+    This function returns a single 3D array with a separate numerical index for each ROI,
 
     Parameters
     ----------
@@ -328,6 +328,8 @@ def get_roi_masks(subject,xfmname,roi_list=None,dst=2,fail_for_missing_rois=Fals
     if roi_list is None:
         roi_list = rois.names
     else:
+        # Idiot-proofing
+        assert len(set(roi_list))==len(roi_list), 'Duplicate ROI found in list!'
         roi_list = [r for r in roi_list if r in ['Cortex','cortex']+rois.names]
         if fail_for_missing_rois:
             fails = [r for r in roi_list if not r in ['Cortex','cortex']+rois.names]
