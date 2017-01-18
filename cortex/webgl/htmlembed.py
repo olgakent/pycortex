@@ -53,7 +53,7 @@ def _embed_js(dom, script, rootdirs):
                 jssrc = jssrc.replace(src, "%s"%serve.make_base64(jspath).replace('\n',''))
 
         script.removeAttribute("src")
-        script.appendChild(dom.createTextNode(jssrc.decode('utf-8')))
+        script.appendChild(dom.createTextNode(jssrc))
 
 def _embed_worker(worker):
     wparse = re.compile(r"importScripts\((.*)\)")
@@ -121,4 +121,4 @@ if (window.webkitURL)
         walker = html5lib.treewalkers.getTreeWalker("dom")
 
         for line in serializer.serialize(walker(dom)):
-            htmlfile.write(line.encode("utf-8"))
+            htmlfile.write(line)
