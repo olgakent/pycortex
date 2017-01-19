@@ -57,7 +57,7 @@ class ROIpack(object):
     def to_npz(self, filename):
         """Saves npz file containing ROI masks.
         """
-        roidata = dict([(name,vd.data) for name,vd in self.rois.iteritems()])
+        roidata = dict([(name,vd.data) for name,vd in self.rois.items()])
         np.savez(filename, **roidata)
 
     def to_svg(self, open_inkscape=False, filename=None):
