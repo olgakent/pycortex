@@ -1,3 +1,4 @@
+import functools
 import os
 import tempfile
 import binascii
@@ -134,7 +135,7 @@ class ROIpack(object):
 
                 cc = nx.cycles.cycle_basis(bgraph)
                 if len(cc) > 1:
-                    edges = reduce(set.symmetric_difference,
+                    edges = functools.reduce(set.symmetric_difference,
                                    [set(map(lambda l:tuple(sorted(l)), zip(c, c[1:]+[c[0]]))) for c in cc])
                     eg = nx.from_edgelist(edges)
                     cycles = nx.cycles.cycle_basis(eg)

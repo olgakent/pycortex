@@ -1,3 +1,4 @@
+import functools
 import io
 import os
 import glob
@@ -639,11 +640,11 @@ def _make_pixel_cache(subject, xfmname, height=1024, thick=32, depth=0.5, sample
         piacoords = xfm((pia[valid][dl.vertices][simps] * ll[np.newaxis].T).sum(1))
         wmcoords = xfm((wm[valid][dl.vertices][simps] * ll[np.newaxis].T).sum(1))
         # Changed for python3 compatibility
-        # valid_p = reduce(np.logical_and, [reduce(np.logical_and, (0 <= piacoords).T), 
+        # valid_p = functools.reduce(np.logical_and, [functools.reduce(np.logical_and, (0 <= piacoords).T), 
         #     piacoords[:,0] < xfm.shape[2], 
         #     piacoords[:,1] < xfm.shape[1], 
         #     piacoords[:,2] < xfm.shape[0]])
-        # valid_w = reduce(np.logical_and, [reduce(np.logical_and, (0 <= wmcoords).T), 
+        # valid_w = functools.reduce(np.logical_and, [functools.reduce(np.logical_and, (0 <= wmcoords).T), 
         #     wmcoords[:,0] < xfm.shape[2],
         #     wmcoords[:,1] < xfm.shape[1],
         #     wmcoords[:,2] < xfm.shape[0]])
@@ -683,7 +684,7 @@ def _make_pixel_cache(subject, xfmname, height=1024, thick=32, depth=0.5, sample
         fid, polys = db.get_surf(subject, "fiducial", merge=True)
         fidcoords = xfm((fid[valid][dl.vertices][simps] * ll[np.newaxis].T).sum(1))
 
-        valid = reduce(np.logical_and, [reduce(np.logical_and, (0 <= fidcoords).T),
+        valid = functools.reduce(np.logical_and, [functools.reduce(np.logical_and, (0 <= fidcoords).T),
             fidcoords[:,0] < xfm.shape[2],
             fidcoords[:,1] < xfm.shape[1],
             fidcoords[:,2] < xfm.shape[0]])
