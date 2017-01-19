@@ -27,3 +27,8 @@ class dep(object):
 		warnings.warn("cortex.surfs is deprecated, use cortex.db instead", Warning)
 		return db.__dir__()
 surfs = dep()
+
+# set default encoding for python 2 compatibility
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
