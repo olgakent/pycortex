@@ -1,8 +1,8 @@
 import functools
+import io
 import os
 import tempfile
 import binascii
-from io import StringIO
 import numpy as np
 
 import networkx as nx
@@ -81,7 +81,7 @@ class ROIpack(object):
         # Add curvature
         from matplotlib import cm
         curv = VertexData(np.hstack(get_curvature(self.subject)), self.subject)
-        fp = StringIO()
+        fp = io.BytesIO()
         curvim = quickflat.make_png(fp, curv, height=1024, with_rois=False, with_labels=False,
                                     with_colorbar=False, cmap=cm.gray,recache=True)
         fp.seek(0)

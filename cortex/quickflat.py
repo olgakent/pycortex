@@ -374,11 +374,7 @@ def make_svg(fname, braindata, with_labels=True, **kwargs): # recache=False, pix
         this function you are basically saying that you want an editable layer of vector 
         graphic ROIs on top of your image. `with_cutouts` is not functional yet.
     """
-    try:
-        from io import StringIO
-        fp = StringIO()
-    except:
-        fp = io.StringIO()
+    fp = io.BytesIO()
     from matplotlib.pylab import imsave
     to_cut = ['with_rois','cutouts']
     for cc in to_cut:
@@ -448,12 +444,12 @@ def overlay_rois(im, subject, name=None, height=1024, labels=True, **kwargs):
     cmd = "composite {rois} - {name}".format(rois=rois[key].name, name=name)
     proc = sp.Popen(shlex.split(cmd), stdin=sp.PIPE, stdout=sp.PIPE)
 
-    fp = io.StringIO()
+    fp = io.BytesIO()
     imsave(fp, im, **kwargs)
     fp.seek(0)
     out, err = proc.communicate(fp.read())
     if len(out) > 0:
-        fp = io.StringIO()
+        fp = io.BytesIO()
         fp.write(out)
         fp.seek(0)
         return fp

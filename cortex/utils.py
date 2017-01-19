@@ -185,11 +185,7 @@ def add_roi(data, name="new_roi", open_inkscape=True, add_path=True, **kwargs):
         raise TypeError("Please specify a data view")
 
     rois = db.get_overlay(dv.subject)
-    try:
-        from io import StringIO
-        fp = StringIO()
-    except:
-        fp = io.StringIO()
+    fp = io.BytesIO()
 
     quickflat.make_png(fp, dv, height=1024, with_rois=False, with_labels=False, **kwargs)
     fp.seek(0)

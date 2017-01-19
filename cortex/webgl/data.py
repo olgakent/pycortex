@@ -64,13 +64,8 @@ class Package(object):
 
 def _pack_png(mosaic):
     from PIL import Image
-    try:
-        # Python 2.X
-        from io import StringIO as imIO
-    except ImportError:
-        # Python 3.X
-        from io import BytesIO as imIO
-    buf = imIO()
+    from io import BytesIO
+    buf = BytesIO()
     if mosaic.dtype not in (np.float32, np.uint8):
         raise TypeError
 

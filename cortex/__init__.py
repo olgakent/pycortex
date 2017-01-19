@@ -30,5 +30,6 @@ surfs = dep()
 
 # set default encoding for python 2 compatibility
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+if sys.version_info.major == 2:
+	reload(sys)
+	sys.setdefaultencoding('utf8')
