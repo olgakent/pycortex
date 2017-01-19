@@ -186,8 +186,8 @@ def add_roi(data, name="new_roi", open_inkscape=True, add_path=True, **kwargs):
 
     rois = db.get_overlay(dv.subject)
     try:
-        import cStringIO
-        fp = cStringIO.StringIO()
+        from io import StringIO
+        fp = StringIO()
     except:
         fp = io.StringIO()
 

@@ -374,8 +374,8 @@ def make_svg(fname, braindata, with_labels=True, **kwargs): # recache=False, pix
         graphic ROIs on top of your image. `with_cutouts` is not functional yet.
     """
     try:
-        import cStringIO
-        fp = cStringIO.StringIO()
+        from io import StringIO
+        fp = StringIO()
     except:
         fp = io.StringIO()
     from matplotlib.pylab import imsave

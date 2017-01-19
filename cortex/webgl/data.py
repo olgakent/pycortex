@@ -66,7 +66,7 @@ def _pack_png(mosaic):
     from PIL import Image
     try:
         # Python 2.X
-        from cStringIO import StringIO as imIO
+        from io import StringIO as imIO
     except ImportError:
         # Python 3.X
         from io import BytesIO as imIO
