@@ -492,7 +492,7 @@ class Database(object):
 
         try:
             from . import formats
-            return formats.read(os.path.splitext(files[type][hemi])[0])
+            return formats.read(str(os.path.splitext(files[type][hemi])[0])) # str is a hack! files has unicode shit! Why?? (even in python2.7)
         except KeyError:
             raise IOError
 
