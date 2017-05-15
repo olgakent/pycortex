@@ -225,7 +225,6 @@ def show(data, types=("inflated",), recache=False, cmap='RdBu_r', layout=None,
         which server port is running the web page) This argument replaces `open_browser`,
         which still works (2016.08.17) but is deprecated.
     """
-    print('Testing new webshow...')
     data = dataset.normalize(data)
     if not isinstance(data, dataset.Dataset):
         data = dataset.Dataset(data=data)
